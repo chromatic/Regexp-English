@@ -14,7 +14,7 @@ use constant REGEX => 0;
 use constant STORE => 1;
 use constant STACK => 2;
 
-$VERSION = '0.20';
+$VERSION = '0.21';
 
 # the key is the name of the method to be created
 # 	symbol is the regex token this represents
@@ -93,8 +93,7 @@ sub chars {
 		return $symbol unless @_;
 
 		my $self = shift;
-#		unless( UNIVERSAL::isa($self, 'Regexp::English') ) {
-		unless( ref $self ) {
+		unless( ref $self and (UNIVERSAL::isa($self, 'Regexp::English')) ) {
 			$self = $self->new();
 		}
 		$self->[REGEX] .= $symbol;
@@ -141,7 +140,7 @@ foreach my $quantifier (keys %quantifiers) {
 # tested in t/groupings
 my %groupings = (
 	comment => '(?#',
-	group => '(:',
+	group => '(?:',
 	followed_by => '(?=',
 	not_followed_by => '(?!',
 	after => '(?<=',
@@ -195,17 +194,27 @@ sub install {
 	push @EXPORT_OK, "&$name";
 }
 
-# XXX - this sucks and doesn't work with end() in method calls
-install( 'or', standard('(?:', '|', ''), 1 );
+install( 'or', sub {
+	if (UNIVERSAL::isa($_[0], 'Regexp::English')) {
+		my $self = shift;
+		if (@_) {
+			$self->[REGEX] .= '(?:' . join('|', @_) . ')';
+		} else {
+			$self->[REGEX] .= '|';
+		}
+		return $self;
+	}
+	return '(?:' . join('|', @_) . ')';
+}, 1);
+
 install( 'class', standard( '[', '', ']' ), 1 );
 # XXX - not()
 
 sub remember {
 	my $self = shift;
 
-# XXX: this may not treat $_[0] correctly
-#	$self = $self->new() unless UNIVERSAL::isa($self, 'Regexp::English');
-	$self = $self->new() unless ref $self;
+	$self = $self->new() unless ref $self 
+		and UNIVERSAL::isa($self, 'Regexp::English');
 
 	# the first element may be a reference, so stick it in STORE
 	if (ref($_[0]) eq 'SCALAR') {
@@ -230,12 +239,9 @@ sub end {
 	my ($self, $levels) = @_;
 	$levels = 1 unless defined $levels;
 
-	# this is pretty meaningless for an end() call!
-	# $self = $self->new() unless ref $self;
-
 	unless (defined $self->[STACK] and @{ $self->[STACK] }) {
 		require Carp;
-		#		Carp::confess("end() called without remember()");
+		Carp::confess("end() called without remember()");
 		return $self;
 	}
 
@@ -311,7 +317,7 @@ Regexp::English - Perl module to create regular expressions more verbosely
 	use Regexp::English;
 
 	my $re = Regexp::English
-		-> start_of_line()
+		-> start_of_line
 		-> literal('Flippers')
 		-> literal(':')
 		-> optional
@@ -349,10 +355,14 @@ will be automagically compiled behind the scenes.
 
 =head2 Characters
 
-Character methods correspond to standard regular expression characters
-and metacharacters, for the most part.  As a little bit of syntactic sugar,
-most of these methods have plurals, negations, and negated plurals.  This is
-more clear looking at them:
+Character methods correspond to standard regular expression characters and
+metacharacters, for the most part.  As a little bit of syntactic sugar, most of
+these methods have plurals, negations, and negated plurals.  This is more clear
+looking at them.  Though these are designed to be called on a new
+Regexp::English object while building up larger regular expressions, they may
+be used as class methods to access regular expression atoms, which are then
+used in larger regular expressions.  This isn't entirely pretty, but it ought
+to work just about everywhere.
 
 =over 4
 
@@ -485,7 +495,7 @@ arguments:
 
 	use Regexp::English qw( :standard );
 
-	my $re = Regexp::English->new()
+	my $re = Regexp::English->new
 		->multiple('a');
 
 The open quantifier will automatically be closed for you.  Though this syntax
@@ -637,16 +647,40 @@ treating a Regexp::English object as a regular expression.  Nifty.
 
 =item * C<or()>
 
-Provides very basic alternation capabilities.  This is supported only in a
-preliminary sense, and isn't terribly useful as it stands.  Due to the
-internals of Regexp::English, you must alternate only on literals, or use class
-method calls to achieve your goals:
+Provides alternation capabilities.  This has been improved in version 0.21 to
+the point where it is actually useful.  The preferred interface is very similar
+to Grouping calls:
 
-	my $re = Regexp::English->new()
+	my $re = Regexp::English->new
+		->group
+			->digit
+			->or
+			->word_char;
+
+Wrapping the entire alternation in C<group()> or some other Grouping method is
+highly recommended, as you might want to use a Quantifier or something more
+complex:
+
+	my $re = Regexp::English->new
+		->remember
+				->literal('root beer')
+			->or
+				->literal('milkshake')
+		->end;
+
+If you find this onerous, you can also pass arguments to C<or()>, which will be
+grouped together in non-capturing braces.  Note that you will have to import
+the appropriate functions or fully qualify them.  Calling these functions as
+class methods is not currently guaranteed to work reliably.  It may never be
+guaranteed to work reliably.  Properly indented, the method interface looks
+nicer anyway, but you have two options:
+
+	my $functionre = Regexp::English->new
 		->or( Regexp::English::digit, Regexp::English::word_char );
+	
+	my $classmethodre = Regexp::English->new
+		->or( Regexp::English->digit, Regexp::English->word_char );
 
-This will hopefully change in the future to make C<or()> much more useful.
-Everyone needs a goal.
 
 =item * C<debug()>
 
@@ -676,8 +710,6 @@ module.  This is probably news to him, too.  :)
 
 =over 4
 
-=item * Fix C<or()>
-
 =item * Add C<not()>
 
 =item * More error checking
@@ -687,6 +719,8 @@ module.  This is probably news to him, too.  :)
 =item * Add POSIX character classes ?
 
 =item * Delegate to Regexp::Common ?
+
+=item * Allow other language backends (probably just add documentation for this)
 
 =item * Improve documentation
 

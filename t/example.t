@@ -13,7 +13,7 @@ use Test::More tests => 3;
 	use Regexp::English;
 
 	my $re = Regexp::English
-		-> start_of_line()
+		-> start_of_line
 		-> literal('Flippers')
 		-> literal(':')
 		-> optional

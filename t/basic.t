@@ -7,7 +7,7 @@ BEGIN {
 
 use strict;
 
-use Test::More tests => 24;
+use Test::More tests => 35;
 
 use Regexp::English qw( :standard );
 
@@ -95,6 +95,46 @@ $re = Regexp::English->new()
 ok( $re->match('1'), 'should match first of alternate' );
 ok( $re->match('a'), 'should match second of alternate' );
 ok( ! $re->match(' '), 'should not match character not in alternation' );
+
+$re = Regexp::English->new()
+	->or( Regexp::English->digit, Regexp::English->word_char );
+
+ok( $re->match('1'), 'alternate should work with class method calls' );
+ok( $re->match('a'), '... and second alternate should also match' );
+ok( ! $re->match(' '), '... and should not match bad match' );
+
+my $scalar;
+$re = Regexp::English->new
+	->group
+		->literal('abc')
+	->end
+	->remember(\$scalar)
+		->literal('def');
+
+ok( $re->match('abcdef!'), 'group() should work in pattern' );
+is( $scalar, 'def', '... and should not interfere with other Groupings' );
+
+$re = Regexp::English->new()
+	->group
+		->digit
+	->or
+		->word_char;
+
+ok( $re->match('1'), 'should match first of alternate' );
+ok( $re->match('a'), 'should match second of alternate' );
+ok( ! $re->match(' '), 'should not match character not in alternation' );
+
+$re = Regexp::English->new
+	->remember
+			->literal('root beer')
+		->or
+			->literal('milkshake')
+	->end;
+
+is( ($re->match('root beer float'))[0], 'root beer', 
+	'or() should work when in a grouping' );
+is( ($re->match('warmmilkshake'))[0], 'milkshake', '... matching both options');
+ok( ! $re->match('beer in a can'), '... but not invalid match' );
 
 # XXX:
 #	test and, not

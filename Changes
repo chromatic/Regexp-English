@@ -1,5 +1,13 @@
 Revision history for Perl extension Regexp::English.
 
+0.21  Wed Jan 16 22:56:43 MST 2002
+	- improved or() support
+	- added more tests for or() to t/basic.t
+	- fixed bug in group(), added test to t/basic.t
+	- allow character methods to be called as class methods
+	- improved class/object method checking in remember() and chars()
+	- cleaned up end() slightly
+
 0.20  Tue Jan 15 16:18:34 MST 2002
 	- finished documentation
 	- improved method calls of Quantifiers and Groupings

@@ -1,0 +1,16 @@
+---
+name: Regexp-English
+version: 1.00
+author:
+  - chromatic <chromatic@wgz.org>
+abstract: Perl module to create regular expressions more verbosely
+license: perl
+requires:
+  Scalar::Util: ''
+build_requires:
+  Test::Simple: 0.60
+provides:
+  Regexp::English:
+    file: lib/Regexp/English.pm
+    version: 1.00
+generated_by: Module::Build version 0.2611

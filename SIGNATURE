@@ -1,0 +1,40 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.44.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 e76654bd567c275ce19a4bdc05d1a94022357112 Build.PL
+SHA1 b46146e8c7f766b2c7aa44dd6b0e8b41c7ddc83c Changes
+SHA1 882ecfc11044d2c2876d965bff7e108fca0f22dd MANIFEST
+SHA1 5dedef919b93dda7540850b3dc31942970a9120b META.yml
+SHA1 1a2fb0275333195db0d2280fc1390bfca03b1e33 Makefile.PL
+SHA1 10da321189bdf59d93392ec65f20f7e740966390 README
+SHA1 ef298f03cbd7b73bf09dc812bc37ac5cbb89ee8e lib/Regexp/English.pm
+SHA1 f35a25f9883738be60f36b3ec2d0aeae9e2a9608 t/0-signature.t
+SHA1 9eca20ac4af74260587d33161da3835a7f231c6a t/basic.t
+SHA1 c2dce121ff5f6f739aabb6688a3dcfd0d65b290f t/chars.t
+SHA1 df9cde1b919a4d7147b1d8e22d1e087a5c39c373 t/example.t
+SHA1 1c377b73f931f31f9b064161314bd337c821a63a t/export.t
+SHA1 5859c1ac5a67aeab66e9cfe3b78d471014db9cae t/groupings.t
+SHA1 6da39b48ce64b584e4c3274bff96fc76ff484820 t/pod-coverage.t
+SHA1 0190346d7072d458c8a10a45c19f86db641dcc48 t/pod.t
+SHA1 6d00e2562091098804901106204724a42260a7ca t/quantifiers.t
+SHA1 b205106d18497d59c114e2d77e3c8abf26b10fd1 t/remember.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFC0cISBd8Wn1wI6cQRAiSTAJ4ttRDqNQQBVc9HQoLwX7rjcLtHkACdG/9m
+tOFaWcTuJJRme5hQNQiGf4k=
+=HmAa
+-----END PGP SIGNATURE-----

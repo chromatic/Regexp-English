@@ -1,7 +1,12 @@
 Changes
-English.pm
+Build.PL
+lib/Regexp/English.pm
 Makefile.PL
 MANIFEST
+META.yml
+README
+SIGNATURE
+t/0-signature.t
 t/basic.t
 t/chars.t
 t/example.t
@@ -9,3 +14,6 @@ t/export.t
 t/groupings.t
 t/quantifiers.t
 t/remember.t
+t/pod.t
+t/pod-coverage.t
+SIGNATURE    Added here by Module::Build

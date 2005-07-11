@@ -1,5 +1,21 @@
 Revision history for Perl extension Regexp::English.
 
+1.00 Sun Jul 10 23:13:33 UTC 2005
+	- bumped up version number
+	- migrate to Module::Build
+	- autogenerate Makefile.PL
+	- add README
+	- moved module to lib/Regexp/
+	- added POD, POD coverage, and signature tests
+	- avoid use of ref() and UNIVERSAL::isa() -- I've grown as a programmer
+	- reformatted some code
+	- added some negations and plurals
+	- added /s modifier on newline*()
+	- marked helper-building functions with leading underscores
+	- added documentation for undocumented methods
+	- improved some phrasings in the documentation
+	- clarified what "multiple" means
+
 0.21  Wed Jan 16 22:56:43 MST 2002
 	- improved or() support
 	- added more tests for or() to t/basic.t

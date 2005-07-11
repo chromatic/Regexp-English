@@ -1,15 +1,16 @@
 #!/usr/bin/perl -w
 
-BEGIN {
+BEGIN
+{
 	chdir 't' if -d 't';
-	push @INC, '../blib/lib';
+	use lib '../lib', '../blib/lib';
 }
 
 use strict;
 
-use Test::More tests => 35;
+use Test::More tests => 38;
 
-use Regexp::English qw( :standard );
+use Regexp::English ':standard';
 
 my $re = Regexp::English
 	-> start_of_line()
@@ -82,9 +83,9 @@ for (0 .. 2) {
 my $cap = $re->match(join('', @pieces), '!');
 is( $cap, $pieces[0], 'match() should respect scalar context with bound vars' );
 
-$re = Regexp::English->new
-	->remember
-		->digits;
+$re = Regexp::English->new()
+	->remember()
+		->digits();
 
 $cap = $re->match('abc123');
 is( $cap, '123', 'match() should respect scalar context with no bound vars' );
@@ -136,6 +137,27 @@ is( ($re->match('root beer float'))[0], 'root beer',
 is( ($re->match('warmmilkshake'))[0], 'milkshake', '... matching both options');
 ok( ! $re->match('beer in a can'), '... but not invalid match' );
 
-# XXX:
-#	test and, not
-#	test compile, debug
+$re = eval
+{
+	Regexp::English->new()
+	->literal( 'foo' )
+	->end()
+};
+
+like( $@, qr/end\(\) called without remember\(\)/,
+	'end() should throw warning without remember() call' );
+
+$re = Regexp::English->new()
+	->literal( 'bar' )
+	->multiple()
+		->digit()
+	->end();
+
+is( $re->debug(), 'bar(?:\d+)', 'debug() should return built-up regexp' );
+
+# test no-stack branch of compile()
+$re = Regexp::English->new()
+	->literal( 'baz' )
+	->compile();
+
+is( $re, '(?-xism:baz)', 'compile() should return compiled regexp' );

@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Regexp/English.pm',
 	requires            =>
 	{
-		'Scalar::Util'  => '',
+		'Scalar::Util'  => '1.21',
 	},
     build_requires      =>
 	{

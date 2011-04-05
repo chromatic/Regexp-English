@@ -160,4 +160,4 @@ $re = Regexp::English->new()
 	->literal( 'baz' )
 	->compile();
 
-is( $re, '(?-xism:baz)', 'compile() should return compiled regexp' );
+like( $re, qr/^\(\?[^:]+:baz\)$/, 'compile() should return compiled regexp' );

@@ -1,11 +1,12 @@
 package Regexp::English;
 
 use strict;
+use warnings;
 
-use base 'Exporter';
+use Exporter 'import';
 use vars qw( @export @EXPORT_OK %EXPORT_TAGS $VERSION );
 
-$VERSION = '1.00';
+$VERSION = '1.01';
 
 use overload '""' => \&compile;
 use Scalar::Util 'blessed';
@@ -380,7 +381,7 @@ Regexp::English - Perl module to create regular expressions more verbosely
 		-> remember
 			-> multiple
 				-> digit;
-	
+
 	while (<INPUT>) {
 		if (my $match = $re->match($_)) {
 			print "$match\n";
@@ -441,11 +442,11 @@ matches alphanumerics and the underscore, corresponding to the C<\w> token.
 
 Matches at least one word character.
 
-=item * C<non_word_char()> 
+=item * C<non_word_char()>
 
 Matches any non-word character.
 
-=item * C<non_word_chars()> 
+=item * C<non_word_chars()>
 
 Matches at least one non-word character.
 
@@ -531,7 +532,7 @@ Matches any character that is not a form feed character.
 
 =item * C<alarm()>
 
-Matches an alarm character (C<\a>).  
+Matches an alarm character (C<\a>).
 
 =item * C<alarms()>
 
@@ -573,7 +574,7 @@ appropriately depending on the C</s> or C</m> modifier.
 =item * C<very_end_of_string()>
 
 Matches the very end of a string, just as the C<\z> token.  This does not
-ignore a trailing newline (if it exists).  
+ignore a trailing newline (if it exists).
 
 =item * C<end_of_previous_match()>
 
@@ -654,7 +655,7 @@ item.
 =item * C<minimal()>
 
 This quantifier modifies either C<zero_or_more()> or C<multiple()>, and
-disables greediness, asking for as few matches as possible. 
+disables greediness, asking for as few matches as possible.
 
 =back
 
@@ -803,7 +804,7 @@ options:
 
 	my $functionre = Regexp::English->new()
 		->or( Regexp::English::digit(), Regexp::English::word_char() );
-	
+
 	my $classmethodre = Regexp::English->new()
 		->or( Regexp::English->digit(), Regexp::English->word_char() );
 
@@ -863,10 +864,10 @@ Sarkissian and Damian Conway.
 
 =head1 COPYRIGHT
 
-Copyright (c) 2001-2002, 2005 by chromatic.  Most rights reserved.
+Copyright (c) 2001-2002, 2005, 2011 by chromatic.  Most rights reserved.
 
 This program is free software; you can use, modify, and redistribute it under
-the same terms as Perl itself.
+the same terms as Perl 5.12 itself.
 
 See L<http://www.perl.com/perl/misc/Artistic.html>
 
